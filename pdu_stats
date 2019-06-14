@@ -1,0 +1,10 @@
+PDU="192.168.1.111"
+NAME=PDUA
+
+snmpwalk -v 1 -c public $PDU enterprises.318 > ${PDU}
+
+grep 'LoadStatusLoad.2\|LoadStatusLoad.3' ${PDU} \
+| sed "s/PowerNet-MIB::rPDULoadStatusLoad.2 = Gauge32:/${NAME}_1/g" \
+| sed "s/PowerNet-MIB::rPDULoadStatusLoad.3 = Gauge32:/${NAME}_2/g" \
+> /tmp/collectors/${NAME}.prom
+

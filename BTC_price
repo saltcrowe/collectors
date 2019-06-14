@@ -1,0 +1,5 @@
+#!/bin/bash
+COIN="BTC"
+MAX=100
+curl -s https://api.coindesk.com/v1/bpi/currentprice/$COIN.json | json_pp | awk '$3 > '$MAX' {print ;}' | awk '/rate_float/ {print "'$COIN'" " "  substr($3,1,4)}' > /tmp/collectors/$COIN.prom
+

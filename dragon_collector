@@ -1,0 +1,20 @@
+#!/bin/bash
+
+
+##custom to miner##
+MINERNAME=DRAGON1
+MINER=192.168.1.111
+USERNAME=admin
+PASSWORD=password
+COLLDIR=/tmp/collectors/$MINERNAME.prom
+##get auth token##
+
+JWT=$(curl -s  -d "username=$USERNAME&password=$PASSWORD" -X POST http://$MINER/api/auth | jq -r .jwt)
+
+
+##get hashrate##
+HASHRATE=$(curl -s -d -X POST http://$MINER/api/summary -H "Authorization: Bearer $JWT" | json_pp | grep "Hash Rate" | sed  's/,//g' | sed  's/"Hash Rate" ://g' | awk '{sum+=$1} END {print sum}')
+
+echo "${MINERNAME}_HASH $HASHRATE" > $COLLDIR
+##get temps##
+curl -s -d -X POST http://$MINER/api/summary -H "Authorization: Bearer $JWT" | json_pp | grep "Temperature" | sed  's/,//g' | sed  's/"Temperature" ://g' | sed 's/ //g' | awk '{print "'${MINERNAME}'_TEMP" i++  " "  $1}' >> $COLLDIR

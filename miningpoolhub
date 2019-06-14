@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+curl "https://miningpoolhub.com/index.php?page=api&action=getautoswitchingandprofitsstatistics" | json_pp | jq '.[]' | jq '.[]' | jq  '{ algo: .algo, profit: .profit, port: .port, pool: "MPH" }' | jq -r  '"\(.algo) \(.profit)"' | awk '{print "mph_profit_"$1 " " $2}' | sed -e 's/-//g' > /tmp/collectors/mstats.prom
+

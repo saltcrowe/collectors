@@ -1,0 +1,4 @@
+curl -s https://api.nicehash.com/api?method=simplemultialgo.info \
+| jq -r  '[.result.simplemultialgo] | .[][] | "\(.name) \(.paying) \(.port)"'\
+| awk '{print "nh_profit_"$1" "$2}' > /tmp/collectors/nstats.prom
+
